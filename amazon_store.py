@@ -15,7 +15,7 @@ class AmazonStore:
                 passwd=MYSQL_PASSWD,
                 charset=MYSQL_CHARSET,
                 db=MYSQL_DB,
-                #unix_socket=MYSQL_SOCKET
+                unix_socket=MYSQL_SOCKET
             )
         except:
             traceback.print_exc()
@@ -32,13 +32,6 @@ class AmazonStore:
                     _paltform, _crawl_time, _create_time, _attribute, _extra_image_urls, _description, _tags, _shop_url))
         self.conn.commit()
 
-    def add_inventory(self, _id, _price, _review_count, _grade_count, _total_inventory, _crawl_time, _create_time, _remark):
-        sql = 'insert into scb_crawler_products_sku_dynamic_chenyang(scps_id,scpsd_price,scpsd_review_count,scpsd_grade_count,' \
-              'scpsd_total_inventory,scpsd_crawl_time,scpsd_create_time,scpsd_remark)values(%s,%s,%s,%s,%s,%s,%s,%s)'
-        cur = self.conn.cursor()
-        cur.execute(sql, (_id, _price, _review_count, _grade_count, _total_inventory, _crawl_time, _create_time, _remark))
-        self.conn.commit()
-
     def select_info(self):
         cur = self.conn.cursor(MySQLdb.cursors.DictCursor)
         sql = 'select * from scb_crawler_products_sku_chenyang'
@@ -52,15 +45,39 @@ class AmazonStore:
         cur.execute('update scb_crawler_products_sku_chenyang set scps_attribute="%s", scps_extra_image_urls="%s", scps_description="%s" where scps_id="%s"'% (_attribute, _extra_image_urls, _description, _id))
         self.conn.commit()
 
-    def select_inventory_info(self):
-        cur = self.conn.cursor(MySQLdb.cursors.DictCursor)
-        sql = 'select * from scb_crawler_products_sku_dynamic_chenyang'
-        result = cur.execute(sql)
-        return cur.fetchmany(result)
+    # def select_inventory_info(self):
+    #     cur = self.conn.cursor(MySQLdb.cursors.DictCursor)
+    #     sql = 'select * from scb_crawler_products_sku_dynamic_chenyang'
+    #     result = cur.execute(sql)
+    #     return cur.fetchmany(result)
 
     def update_inventory_info(self, _inventory, _id):
         cur = self.conn.cursor()
         cur.execute('update scb_crawler_products_sku_chenyang set scps_total_inventory="%s" where scps_id="%s"'% (_inventory, _id))
+        self.conn.commit()
+
+    # inventory
+    def get_product_url(self):  # 取出status为0的row的id和product_url
+        cur = self.conn.cursor(MySQLdb.cursors.DictCursor)
+        sql = 'select scps_id, scps_product_url from scb_crawler_products_sku_chenyang where scps_status=0 limit 1'
+        result = cur.execute(sql)
+        return cur.fetchmany(result)
+
+    def add_inventory(self, _id, _price, _review_count, _grade_count, _total_inventory, _crawl_time, _create_time, _remark):  # 插入库存等信息
+        sql = 'insert into scb_crawler_products_sku_dynamic_chenyang(scps_id,scpsd_price,scpsd_review_count,scpsd_grade_count,' \
+              'scpsd_total_inventory,scpsd_crawl_time,scpsd_create_time,scpsd_remark)values(%s,%s,%s,%s,%s,%s,%s,%s)'
+        cur = self.conn.cursor()
+        cur.execute(sql, (_id, _price, _review_count, _grade_count, _total_inventory, _crawl_time, _create_time, _remark))
+        self.conn.commit()
+
+    def set_status_1(self, _id):
+        cur = self.conn.cursor()
+        cur.execute('update scb_crawler_products_sku_chenyang set scps_status=1 where scps_id="%s"' % _id)
+        self.conn.commit()
+
+    def set_status_0(self):
+        cur = self.conn.cursor()
+        cur.execute('update scb_crawler_products_sku_chenyang set scps_status=0')
         self.conn.commit()
 
     # mini dress
@@ -136,7 +153,7 @@ class AmazonIpStore:
                 passwd=MYSQL_PASSWD,
                 charset=MYSQL_CHARSET,
                 db=MYSQL_DB,
-                #unix_socket=MYSQL_SOCKET
+                unix_socket=MYSQL_SOCKET
             )
         except:
             traceback.print_exc()
@@ -173,17 +190,6 @@ class AmazonIpStore:
 
 if __name__ == '__main__':
     amazon_store = AmazonStore()
-    amazon_store.change_status()
+    amazon_store.change_status_1()
 
-    # cur = amazon_store.conn.cursor(MySQLdb.cursors.DictCursor)
-    # sql = "select scps_id, scps_price, scps_sale_price from scb_crawler_products_sku_chenyang where scps_price='0'"
-    # result = cur.execute(sql)
-    # re = cur.fetchmany(result)
-    # print len(re)
-    # for r in re[:1]:
-    #     price = r['scps_sale_price']
-    #     print r
-    #     cur = amazon_store.conn.cursor()
-    #     sql = 'update scb_crawler_products_sku_chenyang set scps_price="%s", scps_sale_price="0" where scps_id=5' % price
-    #     cur.execute(sql)
-    #     amazon_store.conn.commit()
+

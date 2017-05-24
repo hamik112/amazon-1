@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-MYSQL_HOST = '47.91.140.136'  # 服务器上改为localhost
+
+MYSQL_HOST = 'localhost'  # 服务器上改为localhost,47.91.140.136
 MYSQL_PORT = 3306
 MYSQL_USER = 'bgpc'
 MYSQL_PASSWD = 'bgpc1qaz@WSX'
@@ -14,7 +14,7 @@ MYSQL_USER = 'root'
 MYSQL_PASSWD = '123456'
 MYSQL_DB = 'scb_crawler_system'
 MYSQL_CHARSET = 'utf8'
-
+"""
 RS_HOST = '127.0.0.1'
 RS_PORT = 6379
 RS_DB = 0
