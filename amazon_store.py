@@ -78,7 +78,7 @@ class AmazonStore:
         return cur.fetchmany(result)
 
     def insert_url_title(self, _id, _url, _title, _img, _category, _search_word, _platform, _currency, _attribute='', _extra_image_urls='', _description='', _tags='', _shop_url='', _feature=''):
-        sql = "insert into scb_crawler_products_sku_chenyang(scps_product_id,scps_product_url, scps_name, scps_image_url,scps_category,scps_search_word," \
+        sql = "insert into scb_crawler_products_sku_mini_dress_amazon(scps_product_id,scps_product_url, scps_name, scps_image_url,scps_category,scps_search_word," \
               "scps_platform,scps_currency,scps_attribute,scps_extra_image_urls,scps_description,scps_tags,scps_shop_url, scps_feature )values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         cur = self.conn.cursor()
         cur.execute(sql, (_id, _url, _title, _img, _category, _search_word, _platform, _currency, _attribute, _extra_image_urls, _description, _tags, _shop_url, _feature))
@@ -90,7 +90,7 @@ class AmazonStore:
         _feature = MySQLdb.escape_string(_feature)
         _description = MySQLdb.escape_string(_description)
         cur = self.conn.cursor()
-        cur.execute('update scb_crawler_products_sku_chenyang set scps_status="%s", scps_price="%s", scps_sale_price="%s", scps_grade_count="%s",'
+        cur.execute('update scb_crawler_products_sku_mini_dress_amazon set scps_status="%s", scps_price="%s", scps_sale_price="%s", scps_grade_count="%s",'
                     'scps_review_count="%s", scps_attribute="%s", scps_feature="%s", scps_extra_image_urls="%s", scps_description="%s",'
                     'scps_generation_time="%s", scps_crawl_time="%s", scps_create_time="%s" where scps_id="%s"'
                     % (_status, _price, _sale_price, _grade_count, _review_count, _attribute, _feature, _extra_image_urls,
@@ -99,18 +99,18 @@ class AmazonStore:
 
     def count_status_0(self):
         cur = self.conn.cursor(MySQLdb.cursors.DictCursor)
-        sql = 'select scps_id, scps_product_url from scb_crawler_products_sku_chenyang where scps_status=0 limit 1'
+        sql = 'select scps_id, scps_product_url from scb_crawler_products_sku_mini_dress_amazon where scps_status=0 limit 1'
         result = cur.execute(sql)
         return cur.fetchmany(result)
 
     def change_status(self):
         cur = self.conn.cursor()
-        cur.execute('update scb_crawler_products_sku_chenyang set scps_status=0 where scps_id > 0')
+        cur.execute('update scb_crawler_products_sku_mini_dress_amazon set scps_status=0 where scps_id > 0')
         self.conn.commit()
 
-    def delete_id(self, _id):
+    def delete_row(self, _id):
         cur = self.conn.cursor()
-        cur.execute('delete from scb_crawler_products_sku_chenyang where scps_id="%s"' % _id)
+        cur.execute('delete from scb_crawler_products_sku_mini_dress_amazon where scps_id="%s"' % _id)
         self.conn.commit()
 
     # test

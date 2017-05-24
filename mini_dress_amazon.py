@@ -265,7 +265,7 @@ if __name__ == '__main__':
                 # with codecs.open('amazon.html', 'w') as html_file:
                 #     html_file.write(r.content)
                 if r.status_code == 404:
-                    amazon_store.delete_id(_id)
+                    amazon_store.delete_row(_id)
                 elif r.status_code == 200:
                     get_product_info(r.content, _id)
                 time.sleep(1)
