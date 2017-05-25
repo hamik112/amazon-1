@@ -42,12 +42,14 @@ def isDisplayed(is_driver, elementType, element):
 
 def get_inventory(driver, url):
     inventory = 0
-    global flag, price, review_count, grade_count, select_attribute
+    global flag, price, review_count, grade_count, select_attribute, captcha_num, fg
     try:
         driver.get(url)
         if isDisplayed(driver, 'id', 'captchacharacters'):
-            flag = False
-            print u'遇到验证码'
+            captcha_num += 1
+            if captcha_num == 3:  # 遇三次验证码退出程序
+                fg = False
+            print u'遇到验证码 %s 次' % captcha_num
             return
     except TimeoutException:
         driver.find_element_by_id('twotabsearchtextbox').send_keys(Keys.ESCAPE)
@@ -152,16 +154,17 @@ def get_inventory(driver, url):
 if __name__ == '__main__':
     amazon_store = AmazonStore()
     amazon_ip = AmazonIpStore()
+    captcha_num = 0  # 遇到验证码次数
     fg = True
     while fg:
         row = amazon_store.get_product_url()
         if len(row) == 0:
             break
         ip_total = amazon_ip.count_total()[0][0]
-        print u'可以代理ip: %s' % ip_total
+        print u'代理ip数目: %s' % ip_total
         if int(ip_total) > 0:
             ip = amazon_ip.select_ip(1, 'amazon.com')[0][0]  # 取出status为1的代理ip
-            print(u'当前使用代理ip: %s' % ip)
+            print(u'当前使用ip: %s' % ip)
         else:
             break
         # wd = webdriver.Chrome("C:/Users/Administrator/AppData/Local/Google/Chrome/Application/chromedriver.exe")
